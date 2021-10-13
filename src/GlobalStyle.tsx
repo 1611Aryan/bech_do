@@ -12,6 +12,11 @@ width:100%;
 font-family: 'Poppins', sans-serif;
 }
 
+a{
+    text-decoration: none;
+    color:inherit
+}
+
 `
 
 export default GlobalStyle

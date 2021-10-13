@@ -38,7 +38,7 @@ const Home = () => {
             <div className="container">
               <label htmlFor="password">Password: </label>
               <br />
-              <input type="password" name="password" autoFocus required />
+              <input type="password" name="password" required />
             </div>
             <button>Login</button>
           </form>
@@ -176,8 +176,7 @@ const StyledHome = styled.section`
           margin-top: 0.5rem;
           width: 100%;
           padding: 0.4rem;
-          font-size: 1rem;
-          font-family: poppins;
+
           border: 0;
           &:focus {
             outline: 0;
@@ -188,7 +187,6 @@ const StyledHome = styled.section`
           cursor: pointer;
           padding: 0.4rem 1rem;
           font-size: 1rem;
-          font-family: poppins;
         }
       }
     }

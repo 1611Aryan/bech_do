@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom"
 import styled from "styled-components"
+import RegisterBg from "./../Media/register.jpg"
 
 const Register = () => {
   return (
     <StyledRegister>
       <header>
-        <h1>Bech Do</h1>
+        <Link to="/">
+          <h1>Bech Do</h1>
+        </Link>
         <nav>
           <ul>
             <li>Contact</li>
@@ -24,7 +27,26 @@ const Register = () => {
           </h1>
         </div>
         <div className="right">
-          <form></form>
+          <img src={RegisterBg} alt="" />
+          <div className="overlay"></div>
+          <form>
+            <div className="container">
+              <label htmlFor="name">Name: </label>
+              <br />
+              <input type="text" name="name" autoFocus required />
+            </div>
+            <div className="container">
+              <label htmlFor="email">Email: </label>
+              <br />
+              <input type="email" name="email" required />
+            </div>
+            <div className="container">
+              <label htmlFor="password">Password: </label>
+              <br />
+              <input type="password" name="password" required />
+            </div>
+            <button>Login</button>
+          </form>
         </div>
       </main>
     </StyledRegister>
@@ -111,7 +133,7 @@ const StyledRegister = styled.section`
       height: 100%;
       width: 40%;
       color: #fff;
-      background: #232323;
+      background: #1b1b1b;
       display: grid;
       place-items: center;
       line-height: 1;
@@ -144,9 +166,9 @@ const StyledRegister = styled.section`
         position: relative;
         z-index: 2;
         width: 100%;
-        height: 55%;
+        height: 65%;
         border-radius: 10px;
-        background: rgba(241, 201, 247, 0.5);
+        background: rgba(252, 234, 255, 0.5);
         backdrop-filter: blur(5px);
         display: flex;
         flex-direction: column;
@@ -164,7 +186,7 @@ const StyledRegister = styled.section`
           width: 100%;
           padding: 0.4rem;
           font-size: 1rem;
-          font-family: poppins;
+
           border: 0;
           &:focus {
             outline: 0;
@@ -175,7 +197,6 @@ const StyledRegister = styled.section`
           cursor: pointer;
           padding: 0.4rem 1rem;
           font-size: 1rem;
-          font-family: poppins;
         }
       }
     }
