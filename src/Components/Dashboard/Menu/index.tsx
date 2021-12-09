@@ -3,21 +3,34 @@ import styled from "@emotion/styled"
 import { FaDollarSign, FaHeart, FaTimes } from "react-icons/fa"
 import { MdLogout } from "react-icons/md"
 import { BsBagFill } from "react-icons/bs"
+import { Link, useNavigate } from "react-router-dom"
+import { logout } from "../../../Redux/Slices/Authentication.Slice"
+import useTypedDispatch from "../../../Hooks/useTypedDispatch"
 
 const Menu: React.FC<{
   menu: boolean
   setMenu: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ menu, setMenu }) => {
+  const dispatch = useTypedDispatch()
+
+  const navigate = useNavigate()
+
   const closeMenu = () => setMenu(false)
+  const Logout = () => {
+    dispatch(logout())
+    navigate("/", { replace: true })
+  }
 
   return (
     <StyledMenu className={menu ? "open" : ""}>
       <FaTimes onClick={closeMenu} className="back" />
       <ul>
-        <li>
-          <FaDollarSign />
-          <span>Sell Items</span>
-        </li>
+        <Link to="/dashboard/sell">
+          <li>
+            <FaDollarSign />
+            <span>Sell Items</span>
+          </li>
+        </Link>
         <li>
           <FaHeart />
           <span>Saved Items</span>
@@ -27,7 +40,7 @@ const Menu: React.FC<{
           <span>My Postings</span>
         </li>
       </ul>
-      <div className="logout">
+      <div className="logout" onClick={Logout}>
         <MdLogout />
         <span>Logout</span>
       </div>
@@ -93,13 +106,13 @@ const StyledMenu = styled.section`
         margin-left: 1rem;
       }
 
-      + li {
-        margin-top: 2rem;
-      }
-
       &:hover {
         transform: scale(1.05);
       }
+    }
+
+    > * + * {
+      margin-top: 2rem;
     }
   }
 

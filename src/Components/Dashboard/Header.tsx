@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { CgProfile } from "react-icons/cg"
 import { GiHamburgerMenu } from "react-icons/gi"
+import { Link } from "react-router-dom"
 
 const Header: React.FC<{
   setMenu: React.Dispatch<React.SetStateAction<boolean>>
@@ -9,7 +10,9 @@ const Header: React.FC<{
 
   return (
     <StyledHeader>
-      <h1>Bech Do</h1>
+      <h1>
+        <Link to="/">Bech Do</Link>
+      </h1>
       <div className="options">
         <div className="profile">
           <CgProfile />

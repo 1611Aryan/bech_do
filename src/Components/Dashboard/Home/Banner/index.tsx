@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 
-import bg_webp from "./../../../Media/bg.webp"
-import bg_jpg from "./../../../Media/bg.jpg"
+import bg_webp from "./../../../../Media/bg.webp"
+import bg_jpg from "./../../../../Media/bg.jpg"
 import SearchBar from "./SearchBar"
 
 const Banner = () => {

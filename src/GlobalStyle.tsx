@@ -30,7 +30,8 @@ const Style = css`
   }
 
   input,
-  button {
+  button,
+  textarea {
     border: 0;
     &:focus {
       outline: 0;

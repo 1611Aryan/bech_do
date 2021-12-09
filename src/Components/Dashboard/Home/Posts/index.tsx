@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import Post from "./post"
 
-import texture_webp from "./../../../Media/texture.webp"
+import texture_webp from "./../../../../Media/texture.webp"
 
 export type postData = {
   itemName: string

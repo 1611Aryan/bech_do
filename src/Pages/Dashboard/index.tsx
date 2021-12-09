@@ -1,10 +1,10 @@
 import styled from "@emotion/styled"
 
-import Posts from "../../Components/Dashboard/Posts"
 import Header from "../../Components/Dashboard/Header"
-import Banner from "../../Components/Dashboard/Banner"
-import Menu from "../../Components/Dashboard/Menu"
+
 import { useState } from "react"
+import { Outlet } from "react-router-dom"
+import Menu from "../../Components/Dashboard/Menu"
 
 const Dashboard = () => {
   const [menu, setMenu] = useState(false)
@@ -13,8 +13,7 @@ const Dashboard = () => {
     <StyledDashboard>
       <Header setMenu={setMenu} />
       <Menu menu={menu} setMenu={setMenu} />
-      <Banner />
-      <Posts />
+      <Outlet />
     </StyledDashboard>
   )
 }
