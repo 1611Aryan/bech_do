@@ -1,21 +1,10 @@
-import React from "react"
-import { BrowserRouter, Route, Switch } from "react-router-dom"
-import Home from "./Sections/Home"
-import Register from "./Sections/Register"
+import { useRoutes } from "react-router"
+import Routes from "./Routes"
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/" exact>
-          <Home />
-        </Route>
-        <Route path="/register" exact>
-          <Register />
-        </Route>
-      </Switch>
-    </BrowserRouter>
-  )
+const App = () => {
+  const routing = useRoutes(Routes())
+
+  return routing
 }
 
 export default App

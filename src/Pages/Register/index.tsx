@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import styled from "styled-components"
-import RegisterBg from "./../Media/register.jpg"
+import styled from "@emotion/styled"
+import RegisterBg from "./../../Media/register.jpg"
 
 const Register = () => {
   return (

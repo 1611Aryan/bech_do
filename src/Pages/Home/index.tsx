@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import styled from "styled-components"
-import bg from "./../Media/bg2.jpg"
+import styled from "@emotion/styled"
+import bg from "./../../Media/bg2.jpg"
 
 const Home = () => {
   return (
@@ -127,7 +127,7 @@ const StyledHome = styled.section`
     .left {
       width: 45%;
       color: #fff;
-      line-height: 1;
+
       span {
         font-size: 5rem;
         font-weight: 700;
