@@ -6,11 +6,27 @@ import Page2 from "./Page2"
 const Sell = () => {
   const [page, setPage] = useState(1)
 
+  const [data, setData] = useState({
+    itemName: "",
+    description: "",
+    tags: "",
+    photos: null as null | { file: File; preview: string }[],
+  })
+  const formData = new FormData()
   return (
     <StyledSell>
       <h1>Create Your Posting</h1>
       <div className="content">
-        {page === 1 ? <Page1 setPage={setPage} /> : <Page2 setPage={setPage} />}
+        {page === 1 ? (
+          <Page1 data={data} setData={setData} setPage={setPage} />
+        ) : (
+          <Page2
+            data={data}
+            formData={formData}
+            setData={setData}
+            setPage={setPage}
+          />
+        )}
       </div>
     </StyledSell>
   )
@@ -39,6 +55,29 @@ const StyledSell = styled.section`
     flex: 0.5;
     > * {
       margin-top: 2rem;
+    }
+
+    .message {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .thumb {
+      display: inline-flex;
+      border-radius: 2px;
+      border: 1px solid #eaeaea;
+      margin-bottom: 8px;
+      margin-right: 8px;
+      max-width: 60%;
+
+      padding: 4px;
+      img {
+        width: 100%;
+        object-fit: cover;
+      }
     }
 
     label {

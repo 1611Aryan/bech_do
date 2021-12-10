@@ -2,9 +2,10 @@ import styled from "@emotion/styled"
 import { useState } from "react"
 
 import { HiPhone } from "react-icons/hi"
+import { CgProfile } from "react-icons/cg"
 import Carousel from "react-multi-carousel"
 import "react-multi-carousel/lib/styles.css"
-import { postData } from "."
+import { postData } from "../../../../Redux/Slices/Post.Slice"
 
 const Post: React.FC<{ postData: postData }> = ({ postData }) => {
   const [bookmark, setBookmark] = useState(false)
@@ -28,10 +29,13 @@ const Post: React.FC<{ postData: postData }> = ({ postData }) => {
     <StyledPost>
       <header>
         <div className="info">
-          <img className="photo" src={postData.profilePhoto} alt="" />
+          <CgProfile className="profile" />
           <div>
             <h3>{postData.itemName}</h3>
-            <h5>{postData.date}</h5>
+            <h5>
+              {postData.createdAt &&
+                new Date(postData.createdAt).toLocaleDateString()}
+            </h5>
           </div>
         </div>
         <svg
@@ -43,7 +47,7 @@ const Post: React.FC<{ postData: postData }> = ({ postData }) => {
           <path
             d="M78.9191 156.052L23.2717 187.05C17.2034 190.43 14.1693 192.12 11.8336 190.998C11.5837 190.877 11.3441 190.737 11.1175 190.577C9 189.083 9 185.61 9 178.663V18.6C9 14.2738 9 12.1107 10.2494 10.6934C10.388 10.5363 10.5363 10.388 10.6934 10.2494C12.1107 9 14.2738 9 18.6 9H85H151.4C155.726 9 157.889 9 159.307 10.2494C159.464 10.388 159.612 10.5363 159.751 10.6934C161 12.1107 161 14.2738 161 18.6V178.97C161 185.802 161 189.218 158.914 190.714C158.69 190.875 158.454 191.016 158.207 191.138C155.903 192.271 152.891 190.658 146.868 187.433L88.1226 155.975C85.958 154.816 84.8757 154.237 83.7057 154.2C83.5725 154.195 83.4391 154.196 83.3059 154.203C82.1367 154.259 81.0642 154.857 78.9191 156.052Z"
             stroke="black"
-            stroke-width="18"
+            strokeWidth="18"
           />
         </svg>
       </header>
@@ -62,7 +66,7 @@ const Post: React.FC<{ postData: postData }> = ({ postData }) => {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item"
         >
-          {postData.gallery.map((src, index) => (
+          {postData.images.map((src, index) => (
             <img src={src} key={index} alt="" />
           ))}
         </Carousel>
@@ -71,7 +75,7 @@ const Post: React.FC<{ postData: postData }> = ({ postData }) => {
       <button className="contact">
         <HiPhone />
         <span className="vanish">Contact</span>
-        <span className="appear">{postData.contact.phone}</span>
+        <span className="appear">{postData.userPhone}</span>
       </button>
     </StyledPost>
   )
@@ -131,11 +135,8 @@ const StyledPost = styled.div`
       }
     }
 
-    .photo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
+    .profile {
+      font-size: 2.5rem;
     }
 
     .bookmark {
@@ -161,12 +162,14 @@ const StyledPost = styled.div`
       width: 100%;
       height: 100%;
       overflow: hidden;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+      .react-multi-carousel-track {
+        height: 100%;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
     }
   }
 

@@ -2,10 +2,13 @@ import styled from "@emotion/styled"
 import { CgProfile } from "react-icons/cg"
 import { GiHamburgerMenu } from "react-icons/gi"
 import { Link } from "react-router-dom"
+import useTypedSelector from "../../Hooks/useTypedSelector"
 
 const Header: React.FC<{
   setMenu: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ setMenu }) => {
+  const { profile } = useTypedSelector(state => state.user)
+
   const openMenu = () => setMenu(true)
 
   return (
@@ -16,7 +19,7 @@ const Header: React.FC<{
       <div className="options">
         <div className="profile">
           <CgProfile />
-          <span>Aryan</span>
+          <span>{profile.name}</span>
         </div>
         <GiHamburgerMenu onClick={openMenu} className="menu" />
       </div>

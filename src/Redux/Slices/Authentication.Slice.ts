@@ -2,12 +2,12 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const PREFIXED_KEY = "BECHDO"
 
-// const toBool = (str: string | null) => str === "true"
+const toBool = (str: string | null) => str === "true"
 
 export const authenticationSlice = createSlice({
   name: "authentication",
   initialState: {
-    loggedIn: true,
+    loggedIn: toBool(localStorage.getItem(PREFIXED_KEY)) || false,
   },
   reducers: {
     login: state => {

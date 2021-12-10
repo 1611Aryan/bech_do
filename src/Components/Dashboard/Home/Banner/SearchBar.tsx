@@ -1,14 +1,29 @@
 import styled from "@emotion/styled"
 import React, { useState } from "react"
+import axios from "axios"
 import { FaSearch } from "react-icons/fa"
+import { postsByTagEndpoint } from "../../../../Endpoints"
+import useTypedDispatch from "../../../../Hooks/useTypedDispatch"
+import { addPosts, postData } from "../../../../Redux/Slices/Post.Slice"
 
 const SearchBar = () => {
   const [input, setInput] = useState("")
 
+  const dispatch = useTypedDispatch()
+
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
     setInput(e.target.value)
 
-  const submitHandler = () => {}
+  const submitHandler = async () => {
+    try {
+      const res = await axios[postsByTagEndpoint.method]<{
+        payload: postData[]
+      }>(postsByTagEndpoint.url + `/${input}`, { withCredentials: true })
+      dispatch(addPosts(res.data.payload))
+    } catch (err) {
+      return console.log(err)
+    }
+  }
 
   return (
     <StyledSearchBar>

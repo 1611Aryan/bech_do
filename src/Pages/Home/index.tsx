@@ -1,8 +1,38 @@
 import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
 import bg from "./../../Media/bg2.jpg"
+import React, { useState } from "react"
+import axios from "axios"
+import { loginEndpoint } from "../../Endpoints"
+import useTypedDispatch from "../../Hooks/useTypedDispatch"
+import { login } from "../../Redux/Slices/Authentication.Slice"
 
 const Home = () => {
+  const [input, setInput] = useState({ email: "", password: "" })
+  const [error, setError] = useState("")
+
+  const dispatch = useTypedDispatch()
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setInput(input => ({ ...input, [e.target.name]: e.target.value }))
+
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    try {
+      await axios[loginEndpoint.method](loginEndpoint.url, input, {
+        withCredentials: true,
+      })
+      dispatch(login())
+    } catch (error: any) {
+      console.log(error)
+      if (error.response.data.message) {
+        return setError(error.response.data.message)
+      } else console.log("Error", error.message)
+      return setError("We encountered an Error please try again later")
+    }
+  }
+
   return (
     <StyledHome>
       <header>
@@ -29,16 +59,31 @@ const Home = () => {
         </div>
         <div className="right">
           <div className="bg"></div>
-          <form>
+          <form onSubmit={submitHandler}>
+            <div className="error">{error}</div>
+
             <div className="container">
               <label htmlFor="email">Email: </label>
               <br />
-              <input type="email" name="email" autoFocus required />
+              <input
+                type="email"
+                name="email"
+                onChange={changeHandler}
+                value={input.email}
+                autoFocus
+                required
+              />
             </div>
             <div className="container">
               <label htmlFor="password">Password: </label>
               <br />
-              <input type="password" name="password" required />
+              <input
+                type="password"
+                name="password"
+                onChange={changeHandler}
+                value={input.password}
+                required
+              />
             </div>
             <button>Login</button>
           </form>
@@ -151,7 +196,7 @@ const StyledHome = styled.section`
         left: 0;
         width: calc(100% + 4rem);
         height: 100vh;
-        background: rgba(0, 0, 0, 0.2) 10%;
+        background: rgba(0, 0, 0, 0.2);
       }
       form {
         position: relative;
@@ -166,6 +211,12 @@ const StyledHome = styled.section`
         align-items: flex-start;
         justify-content: space-evenly;
         padding: 0 2rem;
+
+        .error {
+          font-size: 0.9rem;
+          color: red;
+        }
+
         .container {
           width: 100%;
         }
@@ -176,15 +227,12 @@ const StyledHome = styled.section`
           margin-top: 0.5rem;
           width: 100%;
           padding: 0.4rem;
+          font-size: 1rem;
+          background: #fff8;
 
-          border: 0;
-          &:focus {
-            outline: 0;
-          }
+          border-radius: 2px;
         }
         button {
-          border: 0;
-          cursor: pointer;
           padding: 0.4rem 1rem;
           font-size: 1rem;
         }

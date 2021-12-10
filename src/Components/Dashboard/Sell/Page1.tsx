@@ -3,9 +3,27 @@ import { BsArrowRightCircle } from "react-icons/bs"
 import { Link } from "react-router-dom"
 
 const Page1: React.FC<{
+  data: {
+    itemName: string
+    description: string
+    tags: string
+    photos: { file: File; preview: string }[] | null
+  }
   setPage: React.Dispatch<React.SetStateAction<number>>
-}> = ({ setPage }) => {
+  setData: React.Dispatch<
+    React.SetStateAction<{
+      itemName: string
+      description: string
+      tags: string
+      photos: { file: File; preview: string }[] | null
+    }>
+  >
+}> = ({ setPage, setData, data }) => {
   const nextPage = () => setPage(2)
+
+  const changeHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setData(input => ({ ...input, [e.target.name]: e.target.value }))
 
   return (
     <>
@@ -13,7 +31,14 @@ const Page1: React.FC<{
         <div className="inputContainer">
           <label htmlFor="itemName">Item Name</label>
           <br /> <br />
-          <input type="text" name="itemName" autoFocus required />
+          <input
+            type="text"
+            name="itemName"
+            onChange={changeHandler}
+            value={data.itemName}
+            autoFocus
+            required
+          />
         </div>
         <div className="inputContainer">
           <label htmlFor="description">Item Description</label>
@@ -21,7 +46,9 @@ const Page1: React.FC<{
           <textarea
             name="description"
             className="description"
+            value={data.description}
             required
+            onChange={changeHandler}
           ></textarea>
         </div>
       </form>

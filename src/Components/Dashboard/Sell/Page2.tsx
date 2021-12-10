@@ -1,8 +1,10 @@
 import { BsArrowLeftCircle } from "react-icons/bs"
-import { Link } from "react-router-dom"
 import { MdDone } from "react-icons/md"
 import { useDropzone } from "react-dropzone"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import axios from "axios"
+import { createPostEndpoint } from "../../../Endpoints"
+import useTypedSelector from "../../../Hooks/useTypedSelector"
 
 const thumbsContainer = {
   display: "flex",
@@ -10,67 +12,110 @@ const thumbsContainer = {
   marginTop: 16,
 }
 
-const thumb = {
-  display: "inline-flex",
-  "border-radius": 2,
-  border: "1px solid #eaeaea",
-  marginBottom: 8,
-  marginRight: 8,
-  width: 100,
-  height: 100,
-  padding: 4,
-}
-
-const thumbInner = {
-  display: "flex",
-  "min-width": 0,
-  overflow: "hidden",
-}
-
-const img = {
-  display: "block",
-  width: "auto",
-  height: "100%",
-}
-
 const Page2: React.FC<{
+  data: {
+    itemName: string
+    description: string
+    tags: string
+    photos: { file: File; preview: string }[] | null
+  }
+  formData: FormData
   setPage: React.Dispatch<React.SetStateAction<number>>
-}> = ({ setPage }) => {
+  setData: React.Dispatch<
+    React.SetStateAction<{
+      itemName: string
+      description: string
+      tags: string
+      photos: { file: File; preview: string }[] | null
+    }>
+  >
+}> = ({ data, setPage, setData, formData }) => {
   const prevPage = () => setPage(1)
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
 
-  const [files, setFiles] = useState<any[]>([])
+  const user = useTypedSelector(state => state.user)
+
+  const photo = useRef<File>()
+
+  const [files, setFiles] = useState<any[]>(data.photos || [])
+
+  const changeHandler = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setData(input => ({ ...input, [e.target.name]: e.target.value }))
+
+  const file2Base64 = (file: File) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+      setFiles([{ preview: reader?.result?.toString() || "" }])
+    }
+    reader.onerror = error => error
+  }
+
+  const onDrop = (file: File[]) => {
+    file2Base64(file[0])
+    photo.current = file[0]
+  }
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
-    onDrop: acceptedFiles => {
-      setFiles(files => [
-        ...files,
-        ...acceptedFiles.map(file => ({
-          ...file,
-          preview: URL.createObjectURL(file),
-        })),
-      ])
-    },
+    onDrop,
+    maxFiles: 1,
+    maxSize: 500_000,
   })
 
   const thumbs = files.map(file => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
-        <img src={file.preview} style={img} alt="" />
+    <div className="thumb" key={file.name}>
+      <div>
+        <img src={file.preview} alt="" />
       </div>
     </div>
   ))
 
-  useEffect(
-    () => () => {
-      // Make sure to revoke the data uris to avoid memory leaks
+  useEffect(() => {
+    setData(data => ({ ...data, photos: files }))
+
+    return () => {
       files.forEach(file => URL.revokeObjectURL(file.preview))
-    },
-    [files]
-  )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files])
+
+  const submitHandler = async () => {
+    if (photo.current) formData.append("photos", photo.current)
+
+    formData.append("itemName", data.itemName)
+    formData.append("description", data.description)
+    formData.append("tags", data.tags)
+    formData.append("phone", user.profile.phone)
+
+    try {
+      setError("")
+      setMessage("")
+      // console.log(formData.forEach((v, key) => console.log(key, v)))
+
+      const res = await axios[createPostEndpoint.method](
+        createPostEndpoint.url,
+        formData,
+        { withCredentials: true }
+      )
+
+      setMessage(res.data.message)
+    } catch (error: any) {
+      console.log(error)
+      if (error.response.data.message) {
+        return setError(error.response.data.message)
+      } else console.log("Error", error.message)
+      return setError("We encountered an Error please try again later")
+    }
+  }
 
   return (
     <>
-      <form>
+      <form encType="multipart/formdata">
+        <div className="message">{message}</div>
+        <div className="error">{error}</div>
         <div className="inputContainer">
           <label htmlFor="description">
             <span> Item Tags</span>
@@ -78,7 +123,13 @@ const Page2: React.FC<{
             <small>Seperate Multiple Tags with " , "</small>
           </label>
           <br /> <br />
-          <textarea name="tags" className="tags" required></textarea>
+          <textarea
+            name="tags"
+            className="tags"
+            onChange={changeHandler}
+            value={data.tags}
+            required
+          ></textarea>
         </div>
         <div className="inputContainer">
           <label htmlFor="photos">Item Photos</label>
@@ -93,9 +144,7 @@ const Page2: React.FC<{
         </div>
       </form>
       <div className="btnContainer">
-        <Link to="/dashboard">
-          <MdDone className="done" />
-        </Link>
+        <MdDone className="done" onClick={submitHandler} />
 
         <BsArrowLeftCircle onClick={prevPage} className="next" />
       </div>

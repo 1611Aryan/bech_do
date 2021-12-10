@@ -1,8 +1,46 @@
 import { Link } from "react-router-dom"
 import styled from "@emotion/styled"
 import RegisterBg from "./../../Media/register.jpg"
+import { useState } from "react"
+import { signupEndpoint } from "../../Endpoints"
+import axios from "axios"
 
 const Register = () => {
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+    name: "",
+    phone: "",
+  })
+  const [success, setSuccess] = useState("")
+  const [error, setError] = useState("")
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setInput(input => ({ ...input, [e.target.name]: e.target.value }))
+
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSuccess("")
+    setError("")
+    try {
+      const res = await axios[signupEndpoint.method]<{ message: string }>(
+        signupEndpoint.url,
+        input,
+        {
+          withCredentials: true,
+        }
+      )
+
+      setSuccess(res.data.message)
+    } catch (error: any) {
+      console.log(error)
+      if (error.response.data.message) {
+        return setError(error.response.data.message)
+      } else console.log("Error", error.message)
+      return setError("We encountered an Error please try again later")
+    }
+  }
+
   return (
     <StyledRegister>
       <header>
@@ -29,23 +67,57 @@ const Register = () => {
         <div className="right">
           <img src={RegisterBg} alt="" />
           <div className="overlay"></div>
-          <form>
+          <form onSubmit={submitHandler}>
+            <div className="message">
+              <div className="error">{error}</div>
+              <div className="success">{success}</div>
+            </div>
             <div className="container">
               <label htmlFor="name">Name: </label>
               <br />
-              <input type="text" name="name" autoFocus required />
+              <input
+                type="text"
+                name="name"
+                onChange={changeHandler}
+                value={input.name}
+                autoFocus
+                required
+              />
             </div>
             <div className="container">
               <label htmlFor="email">Email: </label>
               <br />
-              <input type="email" name="email" required />
+              <input
+                type="email"
+                name="email"
+                onChange={changeHandler}
+                value={input.email}
+                required
+              />
+            </div>
+            <div className="container">
+              <label htmlFor="email">Phone: </label>
+              <br />
+              <input
+                type="text"
+                name="phone"
+                onChange={changeHandler}
+                value={input.phone}
+                required
+              />
             </div>
             <div className="container">
               <label htmlFor="password">Password: </label>
               <br />
-              <input type="password" name="password" required />
+              <input
+                type="password"
+                name="password"
+                onChange={changeHandler}
+                value={input.password}
+                required
+              />
             </div>
-            <button>Login</button>
+            <button>Signup</button>
           </form>
         </div>
       </main>
@@ -153,7 +225,7 @@ const StyledRegister = styled.section`
       height: 100%;
       display: grid;
       place-items: center;
-      padding: 0 6rem;
+      padding: 0 10rem;
       .bg {
         position: absolute;
         top: -10vh;
@@ -175,6 +247,17 @@ const StyledRegister = styled.section`
         align-items: flex-start;
         justify-content: space-evenly;
         padding: 0 2rem;
+
+        .success {
+          font-size: 1.1rem;
+          color: green;
+        }
+
+        .error {
+          font-size: 0.9rem;
+          color: red;
+        }
+
         .container {
           width: 100%;
         }
@@ -186,6 +269,9 @@ const StyledRegister = styled.section`
           width: 100%;
           padding: 0.4rem;
           font-size: 1rem;
+          background: #fff8;
+
+          border-radius: 2px;
 
           border: 0;
           &:focus {

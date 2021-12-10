@@ -1,45 +1,36 @@
 import styled from "@emotion/styled"
 import Post from "./post"
-
+import axios from "axios"
 import texture_webp from "./../../../../Media/texture.webp"
 
-export type postData = {
-  itemName: string
-  date: string
-  description: string
-  gallery: string[]
-  profilePhoto: string
-  contact: {
-    phone: string
-    email: string
-  }
-}
+import useTypedSelector from "../../../../Hooks/useTypedSelector"
+import { useEffect } from "react"
+import { allPostsEndpoint } from "../../../../Endpoints"
+import { addPosts, postData } from "../../../../Redux/Slices/Post.Slice"
+import useTypedDispatch from "../../../../Hooks/useTypedDispatch"
 
 const Posts = () => {
-  const data: postData[] = [
-    {
-      profilePhoto:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&w=100",
-      itemName: "White Mattress",
-      date: "4th Dec, 2021",
-      description:
-        "  Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium        reprehenderit similique animi nulla deleniti magnam blanditiis porro        beatae quibusdam maxime?",
-      gallery: [
-        "https://images.unsplash.com/photo-1583535045024-e2479a694777",
-        "https://images.unsplash.com/photo-1506720186575-11354d325017",
-        "https://images.unsplash.com/photo-1530629013299-6cb10d168419?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80",
-        "https://images.unsplash.com/photo-1425219366480-47fdbbe0e83b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
-      ],
-      contact: {
-        phone: "8146740057",
-        email: "abc@xyz.com",
-      },
-    },
-  ]
+  const { posts } = useTypedSelector(state => state.posts)
+
+  const dispatch = useTypedDispatch()
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const res = await axios[allPostsEndpoint.method]<{
+          payload: postData[]
+        }>(allPostsEndpoint.url, { withCredentials: true })
+
+        dispatch(addPosts(res.data.payload))
+      } catch (err) {
+        console.log(err)
+      }
+    })()
+  }, [dispatch])
 
   return (
     <StyledPosts>
-      {data.map((postData, index) => (
+      {posts.map((postData, index) => (
         <Post postData={postData} key={index} />
       ))}
     </StyledPosts>
